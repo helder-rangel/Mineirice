@@ -7,7 +7,7 @@ public class Anfitriao extends Pessoa{
 
     public Anfitriao(){}
 
-    public Anfitriao(Long id, String cpf, String nome, LocalDate dataNascimento, String telefone, String email, double avaliacaoHospede){
+    public Anfitriao(int id, Cpf cpf, String nome, LocalDate dataNascimento, String telefone, String email, double avaliacaoHospede){
         super(id, cpf, nome, dataNascimento, telefone, email);
         this.avaliacaoHospede = avaliacaoHospede;
     }
@@ -17,6 +17,9 @@ public class Anfitriao extends Pessoa{
     }
 
     public void setAvaliacaoHospede(double avaliacaoHospede) {
+        if (avaliacaoHospede < 0 || avaliacaoHospede > 5.0) {
+            throw new IllegalArgumentException("Avaliação deve ser um valor positivo entre 0.0 e 5.0");
+        }
         this.avaliacaoHospede = avaliacaoHospede;
     }
 }

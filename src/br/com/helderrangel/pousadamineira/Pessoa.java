@@ -6,9 +6,9 @@ import java.util.Objects;
 import java.time.Period;
 import java.util.regex.Pattern;
 
-public abstract class Pessoa {
-    private Long id;
-    private String cpf;
+public abstract class Pessoa implements Registro {
+    private int id;
+    private Cpf cpf;
     private String nome;
     private LocalDate dataNascimento;
     private String telefone;
@@ -17,9 +17,7 @@ public abstract class Pessoa {
     );
     private String email;
 
-
-    public Pessoa(){}
-    public Pessoa(Long id, String cpf, String nome, LocalDate dataNascimento, String telefone, String email) {
+    public Pessoa(int id, Cpf cpf, String nome, LocalDate dataNascimento, String telefone, String email) {
         setId(id);
         setCpf(cpf);
         setNome(nome);
@@ -32,11 +30,11 @@ public abstract class Pessoa {
         return getIdade() >= 18;
     }
 
-    public Long  getId() {
+    public int  getId() {
         return id;
     }
 
-    public String getCpf() {
+    public Cpf getCpf() {
         return cpf;
     }
 
@@ -55,69 +53,49 @@ public abstract class Pessoa {
         return telefone;
     }
 
+    public String getTelefoneFormatado() {
+        if(this.telefone == null) {
+            return "";
+        }
+        String ddd = this.telefone.substring(0, 2);
+
+        if (this.telefone.length() == 11) {
+            String parte1 = this.telefone.substring(2, 7);
+            String parte2 = this.telefone.substring(7, 11);
+            return String.format("(%s) %s-%s", ddd, parte1, parte2);
+        }
+        if (this.telefone.length() == 10) {
+            String parte1 = this.telefone.substring(2, 6);
+            String parte2 = this.telefone.substring(6, 10);
+            return String.format("(%s) %s-%s", ddd, parte1, parte2);
+        }
+        return this.telefone;
+    }
+
     public String getEmail() {
         return email;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
+        if(id <= 0) {
+            throw new IllegalArgumentException("Id deve ser um número positivo maior que zero.");
+        }
         this.id = id;
     }
 
-    public final void setCpf(String cpf) {
+    public final void setCpf(Cpf cpf) {
         if(cpf == null) {
             throw new IllegalArgumentException("CPF não pode ser nulo");
         }
-        String cpfLimpo = cpf.replaceAll("\\D", "");
 
-        if(!isCpfValido(cpfLimpo)) {
-            this.cpf = cpfLimpo;
-        }
-
-
-    }
-
-    private boolean isCpfValido(String cpf) {
-        // Exige 11 dígitos e rejeita sequências iguais (ex.: 00000000000, 11111111111)
-        if(cpf.length() != 11 || cpf.matches("(\\d)\\1{10}")) {
-            return false;
-        }
-
-        try {
-            // Cálculo do 1º dígito verificador
-            int soma = 0;
-            for (int i = 0; i < 9; i++) {
-                soma += (cpf.charAt(i) - '0') * (10 - i);
-            }
-            int resto = 11 - (soma % 11);
-            int digito1 = (resto >= 10) ? 0 : resto;
-
-            // Cálculo do 2º dígito verificador
-            soma = 0;
-            for (int i = 0; i < 10; i++) {
-                soma += (cpf.charAt(i) - '0') * (11 - i);
-            }
-            resto = 11 - (soma % 11);
-            int digito2 = (resto >= 10) ? 0 : resto;
-
-            return (digito1 == (cpf.charAt(9) - '0')) && (digito2 == (cpf.charAt(10) - '0'));
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    public String getCpfFormatado() {
-        if (this.cpf == null || this.cpf.length() != 11) {
-            return this.cpf;
-        }
-        return this.cpf.replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
+        this.cpf = cpf;
     }
 
     public void setNome(String nome) {
+        if(nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome inválido");
+        }
         this.nome = nome;
-    }
-
-    public String getCpfFormatado() {
-        if(this.cpf
     }
 
     public final void setDataNascimento(LocalDate dataNascimento) {
@@ -128,7 +106,20 @@ public abstract class Pessoa {
     }
 
     public void setTelefone(String telefone) {
-        this.telefone = telefone;
+        if(telefone == null || telefone.trim().isEmpty()) {
+            throw new IllegalArgumentException("Número de telefone inválido");
+        }
+        //remove parênteses e traçcos
+        String numeros = telefone.replaceAll("\\D", "");
+        //evita sequencias repetidas
+        if(numeros.matches("(\\d)\\1{9,10}")) {
+            throw new IllegalArgumentException("Número de telefone inválido");
+        }
+        //valida DDD
+        if(!numeros.matches("^[1-9]{2}(?:[2-5]\\d{7}|9[6-9]\\d{7})$")) {
+            throw new IllegalArgumentException("Telefone inválido, Informe DDD + número válido.");
+        }
+        this.telefone = numeros;
     }
 
     public final void setEmail(String email) {
@@ -154,11 +145,11 @@ public abstract class Pessoa {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Pessoa pessoa = (Pessoa) o;
-        return id != null && Objects.equals(id, pessoa.id);
+        return id != 0 && id == pessoa.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Integer.hashCode(id);
     }
 }

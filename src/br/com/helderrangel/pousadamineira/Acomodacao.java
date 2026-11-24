@@ -5,21 +5,31 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Acomodacao {
-    private Long id;
+    private int comodo;
     private String titulo;
-    private String descricao;
+    protected String descricao;
     private AcomodacaoTipo tipo;
     private String[] comodidades;
     private double[] descontos;
     private int capacidade;
     private double valorDiaria;
-    double[] avaliacao;
+    private double[] avaliacao;
 
 
-    public Acomodacao(){}
+    public Acomodacao(int comodo, String titulo, String descricao, AcomodacaoTipo tipo, String[] comodidades, int capacidade, double valorDiaria, double[] avaliacao){
+        setcomodo(comodo);
+        setTitulo(titulo);
+        setDescricao(descricao);
+        setTipo(tipo);
+        setComodidades(comodidades);
+        setCapacidade(capacidade);
+        setValorDiaria(valorDiaria);
+        setAvaliacao(avaliacao);
+    }
 
-    public Acomodacao(Long id, String titulo, String descricao, AcomodacaoTipo tipo, String[] comodidades, double[] descontos, int capacidade, double valorDiaria, double[] avaliacao){
-        setId(id);
+    public Acomodacao(int comodo, String titulo, String descricao, AcomodacaoTipo tipo, String[] comodidades, double[] descontos, int capacidade, double valorDiaria, double[] avaliacao){
+        setcomodo(comodo);
+        setTitulo(titulo);
         setDescricao(descricao);
         setTipo(tipo);
         setComodidades(comodidades);
@@ -29,73 +39,84 @@ public class Acomodacao {
         setAvaliacao(avaliacao);
     }
 
-    public Long getId() {
-        return id;
+    public int getcomodo() {
+        return comodo;
+    }
+
+    public void setcomodo(int comodo) {
+        this.comodo = comodo;
     }
 
     public String getTitulo() {
         return titulo;
     }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public AcomodacaoTipo getTipo() {
-        return tipo;
-    }
-
-    public String[] getComodidades() {
-        return comodidades;
-    }
-
-    public double[] getDescontos() {
-        return descontos;
-    }
-
-
-    public int getCapacidade() {
-        return capacidade;
-    }
-
-    public double getValorDiaria() {
-        return valorDiaria;
-    }
-
-    public double[] getAvaliacao() {
-        return avaliacao;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
 
-    public void setComodidades(String[] comodidades) {
-        this.comodidades = comodidades;
-    }
-
-    public void setDescontos(double[] descontos) {
-        this.descontos = descontos;
+    public AcomodacaoTipo getTipo() {
+        return tipo;
     }
 
     public void setTipo(AcomodacaoTipo tipo) {
         this.tipo = tipo;
     }
 
+    public String[] getComodidades() {
+        return comodidades;
+    }
+
+    public void setComodidades(String[] comodidades) {
+        this.comodidades = comodidades;
+    }
+
+    public double[] getDescontos() {
+        return descontos;
+    }
+
+    public void setDescontos(double[] descontos) {
+        this.descontos = descontos;
+    }
+
+    public int getCapacidade() {
+        return capacidade;
+    }
+
     public void setCapacidade(int capacidade) {
+        if (capacidade < 1) {
+            throw new IllegalArgumentException("A pacidade deve ser de pelo mennos 1 pessoa.");
+        }
         this.capacidade = capacidade;
+    }
+
+
+    public int getVagasAcompanhantes(){
+        return Math.max(0, this.capacidade -1);
+    }
+
+    public boolean comportaTotalPessoas(int totalPessoas) {
+        return totalPessoas > 0 && totalPessoas <= this.capacidade;
+    }
+
+    public double getValorDiaria() {
+        return valorDiaria;
     }
 
     public void setValorDiaria(double valorDiaria) {
         this.valorDiaria = valorDiaria;
+    }
+
+    public double[] getAvaliacao() {
+        return avaliacao;
     }
 
     public void setAvaliacao(double[] avaliacao) {
@@ -106,18 +127,18 @@ public class Acomodacao {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Acomodacao that = (Acomodacao) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(comodo, that.comodo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Integer.hashCode(comodo);
     }
 
     @Override
     public String toString() {
         return "Acomodacao{" +
-                "id=" + id +
+                "comodo=" + comodo +
                 ", tipo=" + tipo +
                 ", capacidade=" + capacidade +
                 ", valorDiaria=" + valorDiaria +

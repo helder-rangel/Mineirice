@@ -1,6 +1,6 @@
 package br.com.helderrangel.pousadamineira;
 public class PousadaService {
-    private Hospede[] hospedes = new Hospede[100]
+    private Hospede[] hospedes = new Hospede[100];
     private int qtdHospedes = 0;
 
     public Hospede buscarHospede(String cpf) {
@@ -11,6 +11,4 @@ public class PousadaService {
         }
         return null;
     }
-
-
 }

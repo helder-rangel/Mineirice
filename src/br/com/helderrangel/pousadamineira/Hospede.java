@@ -3,23 +3,22 @@ package br.com.helderrangel.pousadamineira;
 import java.time.LocalDate;
 
 public class Hospede extends Pessoa {
-    double avaliacaoComunidade;
+    private double avaliacaoAcomodacao;
 
-    public Hospede() {
-        super();
-    }
-
-    public Hospede(Long id, String cpf, String nome, LocalDate dataNascimento, String telefone, String email, double avaliacaoComunidade) {
+    public Hospede(int id, Cpf cpf, String nome, LocalDate dataNascimento, String telefone, String email, double avaliacaoAcomodacao) {
         super(id, cpf, nome, dataNascimento, telefone, email);
-        this.avaliacaoComunidade = avaliacaoComunidade;
-
+        setAvaliacaoAcomodacao(avaliacaoAcomodacao);
     }
 
     public double getAvaliacaoComunidade() {
-        return avaliacaoComunidade;
+        return this.avaliacaoAcomodacao;
     }
 
-    public void setAvaliacaoComunidade(double avaliacaoComunidade) {
-        this.avaliacaoComunidade = avaliacaoComunidade;
+    public final void setAvaliacaoAcomodacao(double avaliacaoAcomodacao) {
+        if (avaliacaoAcomodacao < 0 || avaliacaoAcomodacao > 5.0) {
+            throw new IllegalArgumentException("Avaliação deve ser um valor positivo entre 0.0 e 5.0");
+        }
+
+        this.avaliacaoAcomodacao = avaliacaoAcomodacao;
     }
 }
